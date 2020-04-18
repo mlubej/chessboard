@@ -44,13 +44,15 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
         fig.savefig(filename)
 
 
-# TODO: fix
-def plot_process(data, filename=''):
+def plot_history(history, filename=''):
+
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
-    ax.plot(data[:, 0], data[:, 1], 'r*-')
-    ax.set_title('Evolution process', fontsize=20)
-    ax.set_xlabel('Generations', fontsize=20)
-    ax.set_ylabel('Score', fontsize=20)
+    for gen in history:
+        ax.scatter(np.full_like(gen[1], gen[0]), gen[1], s=50, c='k', marker='o')
+        ax.set_title('Evolution process', fontsize=20)
+        ax.set_xlabel('Generation number', fontsize=20)
+        ax.set_ylabel('Fitness level', fontsize=20)
+        ax.set_ylim(bottom=0.0)
     if filename != '':
         fig.savefig(filename)

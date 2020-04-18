@@ -8,24 +8,15 @@ class Individual(object):
     """
     A class representation of an individual
     """
-    def __init__(self, polygons, board_size, chromosome=None, n_pieces=None):
+    def __init__(self, polygons, board_size, chromosome=None):
         """
-        Init funciton. Provide at least one argument. If only the `n_pieces` argument is specified,
-        a random chromosome of this length is generated.
+        Initialization function. A random chromosome is generated if no chromosome is specified.
+        :param polygons: initial polygon list
+        :param board_size: size off the chessboard
         :param chromosome: order sequence of the pieces
-        :param n_pieces: length of the chromosome
         """
-        if chromosome is None and n_pieces is None:
-            raise BaseException('Provide either the chromosome or the length of the chromosome')
-        elif chromosome is not None and n_pieces != len(chromosome):
-            raise BaseException('Length of the chromosome does not equal to the number of pieces!')
-        elif chromosome is None:
-            self.n_pieces = n_pieces
-            self.chromosome = self.generate_chromosome()
-        else:
-            self.chromosome = np.array(chromosome)
-            self.n_pieces = len(chromosome)
-
+        self.n_pieces = len(polygons)
+        self.chromosome = self.generate_chromosome() if chromosome is None else np.array(chromosome)
         self.polygons = polygons
         self.board_size = board_size
         self.fitness, self.placements = get_optimal_configuration_and_fitness(self.chromosome,
