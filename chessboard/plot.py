@@ -8,8 +8,7 @@ from .utils import transform
 
 def plot_chromosome(individual, initial_polygons, board_size, filename=''):
     """
-    Function to plot the final configuration for a given chromosome. The plot can be saved if the filename argument
-    is specified.
+    Function to plot the final configuration for a given chromosome.
     :param individual: an individual class, containing information about the pieces order and placement
     :param initial_polygons: original definition of polygons
     :param board_size: size of chessboard
@@ -20,7 +19,7 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
         pts = np.array(poly.checkers)[:, :-1]
         checkers = np.array(poly.checkers)[:, -1]
         pts = pts[checkers == 1]
-        poly = poly.difference(MultiPoint(pts + 0.5).buffer(0.2))
+        poly = poly.difference(MultiPoint(pts + 0.5).buffer(0.25))
         new_polys.append(poly)
 
     new_polys = np.array(new_polys)
@@ -32,7 +31,7 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     ax.plot(*canvas.exterior.xy, 'k')
-    gdf.plot(ax=ax, column='idx', edgecolor='black', alpha=0.75, vmin=0, vmax=len(initial_polygons))
+    gdf.plot(ax=ax, column='idx', edgecolor='black', alpha=0.75, vmin=0, vmax=len(initial_polygons), cmap=plt.cm.hot)
     ax.set_ylim([-0.1, board_size + 0.1])
     ax.set_xlim([-0.1, board_size + 0.1])
     ax.set_title(f'[{",".join(individual.chromosome.astype(str))}]', fontsize=20)
@@ -41,11 +40,15 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
     ax.set_yticks([])
 
     if filename != '':
-        fig.savefig(filename)
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
 def plot_history(history, filename=''):
-
+    """
+    Function to plot the history of the evolution process
+    :param history: input data for each generation
+    :param filename: filename for saving the image
+    """
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     for gen in history:
