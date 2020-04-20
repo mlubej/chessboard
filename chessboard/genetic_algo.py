@@ -21,8 +21,7 @@ class Individual(object):
         self.chromosome = self.generate_chromosome() if chromosome is None else np.array(chromosome)
         self.polygons = polygons
         self.board_size = board_size
-        self.placements, self.fitness = get_optimal_configuration(self.chromosome,
-                                                                  polygons, board_size)
+        self.placements, self.fitness = get_optimal_configuration(self.chromosome, polygons, board_size)
 
     def generate_chromosome(self):
         """
@@ -33,14 +32,19 @@ class Individual(object):
     def mutate(self, mutation_probability):
         """
         Mutate the chromosome by swapping the gene with a random gene if a condition is met
-        :return: mutated chromosome
+        :param mutation_probability: probability for the mutation to occur
         """
         chromosome = self.chromosome.copy()
+        has_mutated = False
         for idx, c in enumerate(chromosome):
             if np.random.rand() < mutation_probability:
-                rand_idx = np.random.choice(range(self.n_pieces))
+                has_mutated = True
+                rand_idx = np.random.choice(range(len(chromosome)))
                 chromosome[idx], chromosome[rand_idx] = chromosome[rand_idx], chromosome[idx]
-        self.chromosome = chromosome
+
+        if has_mutated:
+            self.chromosome = chromosome
+            self.placements, self.fitness = get_optimal_configuration(self.chromosome, self.polygons, self.board_size)
 
     def mate(self, partner):
         """
@@ -81,7 +85,7 @@ class Evolution(object):
     """
     A class representation of the evolution procedure
     """
-    def __init__(self, n_population, polygons, board_size, mutation_probability=0.1):
+    def __init__(self, n_population, polygons, board_size, mutation_probability=0.01):
         """
         Initialization function. A random chromosome is generated if no chromosome is specified.
         :param n_population: size of the population to work with
@@ -95,7 +99,6 @@ class Evolution(object):
         self.mutation_probability = mutation_probability
         self.population = None
         self.best = None
-        self.generation = 0
         self.history = []
 
     def initialize_population(self):
@@ -103,8 +106,10 @@ class Evolution(object):
         Initialize a random population
         :return: a list of individuals
         """
+        print(f'Generation: {len(self.history)}: Initializing')
         self.population = [Individual(self.polygons, self.board_size) for _ in tqdm(range(self.n_population),
                                                                                     leave=False)]
+        self.mutate_generation()
 
     def select_best_pair(self):
         """
@@ -132,6 +137,7 @@ class Evolution(object):
         """
         Create a next generation of offspring
         """
+        print(f'Generation: {len(self.history)}')
         new_population = []
         for _ in tqdm(range(int(self.n_population/2)), leave=False):
             p1, p2 = self.select_best_pair()
@@ -139,7 +145,6 @@ class Evolution(object):
             new_population.extend([c1, c2])
         self.population = new_population
         self.mutate_generation()
-        self.generation += 1
 
     def check_condition(self):
         """
@@ -173,25 +178,22 @@ class Evolution(object):
         Run the evolution process
         :param filename: filename for saving the image
         """
-        print('Initializing')
         self.initialize_population()
-        self.mutate_generation()
         self.best = self.get_best_candidate()
         pop_fitness_list = np.array([ind.fitness for ind in self.population], dtype=int)
-        self.history.append([self.generation, pop_fitness_list])
+        self.history.append(pop_fitness_list)
         self.plot_process(filename)
         plt.close()
-        print(f'Generation: {self.generation}, best candidate score: {self.best.fitness}, '
+        print(f'Best candidate score: {self.best.fitness}, '
               f'        chromosome: [{",".join(np.array(self.best.chromosome, dtype=str))}]')
         while not self.check_condition():
-            print('Creating next generation')
             self.next_generation()
             best = self.get_best_candidate()
             pop_fitness_list = np.array([ind.fitness for ind in self.population], dtype=int)
-            self.history.append([self.generation, pop_fitness_list])
+            self.history.append(pop_fitness_list)
             self.plot_process(filename)
             plt.close()
             if best.fitness < self.best.fitness:
                 self.best = best
-                print(f'Generation: {self.generation}, best candidate score: {self.best.fitness}, '
-                      f'chromosome: [{",".join(np.array(self.best.chromosome, dtype=str))}]')
+            print(f'Best candidate score: {self.best.fitness}, '
+                  f'chromosome: [{",".join(np.array(self.best.chromosome, dtype=str))}]')

@@ -34,8 +34,8 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
     gdf.plot(ax=ax, column='idx', edgecolor='black', alpha=0.75, vmin=0, vmax=len(initial_polygons), cmap=plt.cm.hot)
     ax.set_ylim([-0.1, board_size + 0.1])
     ax.set_xlim([-0.1, board_size + 0.1])
-    ax.set_title(f'[{",".join(individual.chromosome.astype(str))}]', fontsize=20)
-    ax.set_xlabel(f'Fitness score: {int(individual.fitness)}', fontsize=20)
+    ax.set_title(f'[{",".join(individual.chromosome.astype(str))}]', fontsize=20, fontname='serif')
+    ax.set_xlabel(f'Fitness score: {int(individual.fitness)}', fontsize=20, fontname='serif')
     ax.set_xticks([])
     ax.set_yticks([])
 
@@ -51,11 +51,18 @@ def plot_history(history, filename=''):
     """
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
-    for gen in history:
-        ax.scatter(np.full_like(gen[1], gen[0]), gen[1], s=50, c='k', marker='o')
-        ax.set_title('Evolution process', fontsize=20)
-        ax.set_xlabel('Generation number', fontsize=20)
-        ax.set_ylabel('Fitness level', fontsize=20)
+    for idx, gen in enumerate(history):
+        ax.scatter(np.full_like(gen, idx), gen, s=50, c='k', marker='o')
+        ax.set_title('Evolution process', fontsize=20, fontname='serif')
+        ax.set_xlabel('Generation number', fontsize=20, fontname='serif')
+        ax.set_ylabel('Fitness level', fontsize=20, fontname='serif')
         ax.set_ylim(bottom=0.0)
+
+    plt.plot(range(len(history)), np.mean(history, axis=1), label='Mean generation value')
+    plt.fill_between(range(len(history)), np.mean(history, axis=1) - np.std(history, axis=1),
+                     np.mean(history, axis=1) + np.std(history, axis=1),
+                     alpha=0.5, interpolate=True)
+    plt.legend(prop={'family': 'serif', 'size': 15})
+
     if filename != '':
-        fig.savefig(filename)
+        fig.savefig(filename, dpi=300, bbox_inches='tight')

@@ -164,6 +164,16 @@ def optimal_placement(profile, poly, board_size, origin_checker=None):
         return opt_setting, opt_profile
 
 
+def cantor(a, b):
+    """
+    Cantor pairing function for getting unique numbers from a pair of input numbers.
+    :param a: input number
+    :param b: input number
+    :return: output number
+    """
+    return 0.5 * (a + b + 1) * (a + b) + b
+
+
 def get_optimal_configuration(chromosome, initial_polygons, board_size):
     """
     Put each piece in the chromosome order in the optimal place until the final configuration is
@@ -191,5 +201,5 @@ def get_optimal_configuration(chromosome, initial_polygons, board_size):
         except:
             break
     empty_area = profile.area
-    n_unused_pieces = len(chromosome) - idx
-    return placements, empty_area+n_unused_pieces
+    n_unused_pieces = len(chromosome) - idx - 1
+    return placements, empty_area+n_unused_pieces+calculate_outline(profile)
