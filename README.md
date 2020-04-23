@@ -2,7 +2,7 @@
 
 This package contains the code for solving the 8x8 broken chessboard puzzle, using a genetic algorithm approach.
 
-Read more about it in the blog post here: 
+Read more about it in the blog post here: LINK
 
 ### Installation
 
@@ -13,6 +13,12 @@ pip install .
 
 ### Example
 
-You can find an example usage in the `examples` directory, in the form of a Jupyter Notebook.
+You can find an example usage in the `examples` directory. Just run it with the following code
+
+```python
+python examples/run_solution.py
+```
+
+and watch as the evolution folds in front of your eyes.
 
 Have fun!

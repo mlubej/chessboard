@@ -186,7 +186,6 @@ def get_optimal_configuration(chromosome, initial_polygons, board_size):
     profile = Polygon([[0, 0], [board_size, 0], [board_size, board_size], [0, board_size]])
     placements = np.full_like(chromosome, None, dtype=object)
     origin_checker = None
-
     for idx, c in enumerate(chromosome):
         p = initial_polygons[c]
         try:
@@ -198,8 +197,11 @@ def get_optimal_configuration(chromosome, initial_polygons, board_size):
                     origin_checker = 0
                 else:
                     origin_checker = 1
-        except:
+        except Exception:
+            idx -= 1
             break
     empty_area = profile.area
     n_unused_pieces = len(chromosome) - idx - 1
-    return placements, empty_area+n_unused_pieces+calculate_outline(profile)
+    outline = calculate_outline(profile)
+    fitness_score = empty_area + n_unused_pieces + outline
+    return placements, fitness_score

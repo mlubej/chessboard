@@ -1,6 +1,7 @@
 import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
+
 from shapely.geometry import MultiPoint, Polygon
 
 from .utils import transform
@@ -41,6 +42,7 @@ def plot_chromosome(individual, initial_polygons, board_size, filename=''):
 
     if filename != '':
         fig.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.close()
 
 
 def plot_history(history, filename=''):
@@ -66,3 +68,4 @@ def plot_history(history, filename=''):
 
     if filename != '':
         fig.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.close()

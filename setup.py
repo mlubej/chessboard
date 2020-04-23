@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="genetic_algorithm",
+    name="chessboard",
     version="0.0.1",
     author="Matic Lubej",
     author_email="lubej.matic@gmail.com",
     description="TODO",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mlubej/genetic_chessboard",
+    url="https://github.com/mlubej/chessboard",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
