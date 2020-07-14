@@ -2,7 +2,7 @@
 
 This package contains the code for solving the 8x8 broken chessboard puzzle, using a genetic algorithm approach.
 
-Read more about it in the blog post here: LINK
+Read more about it in the blog post [here](https://medium.com/@lubej.matic/solving-the-broken-chessboard-puzzle-with-a-genetic-algorithm-19be3fff8213).
 
 ### Installation
 
